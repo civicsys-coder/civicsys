@@ -9,6 +9,7 @@ import { MatrixRain } from "@/components/MatrixRain";
 import { AnonymousVoteAbi, getAddresses } from "@/lib/contracts";
 import { anvilLocal } from "@/lib/wagmi";
 import { computeNullifier, getOrCreateIdentitySecret } from "@/lib/nullifier";
+import { logger } from "@/lib/logger";
 
 // Relayer local: cuenta Anvil #1 (clave de prueba PÚBLICA, solo localhost 31337).
 // Sustituye al votante como emisor de la tx → unlinkability (el msg.sender no es
@@ -61,6 +62,7 @@ export default function VotacionPage() {
 
   async function vote(choice: number) {
     if (!anon) return;
+    logger.info("votacion", `voto iniciado · propuesta=${PROPOSAL_ID} opción=${choice}`);
     setState("voting");
     setError(null);
     try {
@@ -75,12 +77,16 @@ export default function VotacionPage() {
         args: [BigInt(PROPOSAL_ID), choice, nullifier],
       });
       await pub.waitForTransactionReceipt({ hash });
+      logger.info("votacion", `voto confirmado · tx=${hash}`);
       setState("done");
       refresh();
     } catch (e) {
       const msg = e instanceof Error ? e.message : "error";
-      if (/ya votaste/.test(msg)) setState("dup");
-      else {
+      if (/ya votaste/.test(msg)) {
+        logger.warn("votacion", "nullifier ya usado · doble voto bloqueado");
+        setState("dup");
+      } else {
+        logger.error("votacion", `fallo al votar: ${msg.split("\n")[0]}`);
         setError(msg.split("\n")[0]);
         setState("error");
       }

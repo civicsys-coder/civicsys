@@ -1,10 +1,12 @@
 """FastAPI app para Hermes runtime + API del agente."""
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
+import logging
 import re
+import time
 
 from app import council, mockdata
 from app.agent import HermesAgent
@@ -27,6 +29,41 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# ── Observabilidad ────────────────────────────────────────────────────────
+# Logs estructurados a stdout (los recoge `docker logs` / Railway). REGLA: nunca
+# se logea la API key, ni embeddings, ni el cuerpo de los requests (solo método,
+# ruta, status, latencia y metadata no sensible).
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s hermes.%(name)s · %(message)s",
+)
+log = logging.getLogger("api")
+
+
+@app.middleware("http")
+async def _log_requests(request: Request, call_next):
+    t0 = time.perf_counter()
+    try:
+        response = await call_next(request)
+    except Exception:
+        log.exception("✗ %s %s — excepción no manejada", request.method, request.url.path)
+        raise
+    dt = (time.perf_counter() - t0) * 1000
+    log.info("%s %s → %s (%.0f ms)", request.method, request.url.path, response.status_code, dt)
+    return response
+
+
+@app.on_event("startup")
+async def _log_startup() -> None:
+    s = get_settings()
+    log.info(
+        "Hermes startup · chain=%s · modelo=%s · gemini_key=%s · db=%s",
+        s.chain_id,
+        s.llm_model_gemini,
+        _gemini_key(s) is not None,  # bool, NUNCA la key
+        "set" if s.database_url else "missing",
+    )
 
 
 def _gemini_key(s) -> str | None:
@@ -84,6 +121,10 @@ async def proposals():
 @app.post("/agents/hermes/ask")
 async def ask(req: AskRequest):
     result = await build_agent().ask(req.message)
+    log.info(
+        "ask (len=%s) → provider=%s conf=%s steps=%s",
+        len(req.message), result.provider, result.confidence, len(result.steps),
+    )
     return {
         "answer": result.answer,
         "provider": result.provider,
@@ -107,7 +148,13 @@ def _resolve_proposal(req: ConcilioRequest) -> dict:
 @app.post("/agents/concilio")
 async def concilio(req: ConcilioRequest):
     p = _resolve_proposal(req)
-    return await build_council().deliberate(p)
+    d = await build_council().deliberate(p)
+    log.info(
+        "concilio prop=%s → veredicto=%s conf=%s divergencia=%s %sms",
+        p["id"], d["verdict"]["provider"], d["verdict"]["confidence"],
+        d["divergence"]["level"], d["elapsed_ms"],
+    )
+    return d
 
 
 @app.get("/agents/status")
@@ -196,6 +243,7 @@ async def toxica_analyze(req: ToxicaAnalyzeRequest):
     p = mockdata.get_proposal(req.proposal_id) or mockdata.PROPOSALS[0]
     tally = {"yes": p["yes"], "no": p["no"], "abstain": p["abstain"]}
     r = await LaToxica(llm=_build_llm()).analyze_session(req.proposal_id, req.transcript, tally)
+    log.info("toxica prop=%s → provider=%s approved=%s", r.proposal_id, r.provider, r.approved)
     # Devuelve el BORRADOR (approved=False). Publicar es una acción humana aparte.
     return {
         "proposal_id": r.proposal_id,

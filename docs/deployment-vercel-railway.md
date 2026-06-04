@@ -129,9 +129,11 @@ git push -u origin main
 
 1. Railway → **New** → **GitHub Repo** → `civicsys` (otra vez, otro servicio).
 2. **Root Directory** = `backend`.
-3. **Build**: Nixpacks detecta Node. Comandos (Settings → Deploy):
-   - Build: `pnpm install && pnpm build`  (o dejá que Nixpacks infiera)
-   - Start: `pnpm start`  (corre `node dist/server.js`)  ·  alternativa sin build: `pnpm dev` (`tsx src/server.ts`)
+3. **Build/Start** (Settings → Deploy):
+   - **Recomendado** (evita el `tsc` estricto del proyecto, que tiene hallazgos preexistentes
+     en `reports.ts`/tests no relacionados al runtime): Build = `pnpm install` · Start = `npx tsx src/server.ts`
+   - (Alternativa con build: `pnpm build` + `pnpm start` → `node dist/server.js`, pero solo si
+     primero limpiás esos errores estrictos de `tsc`.)
 4. **Variables**:
    ```
    CHAIN_ID=57057

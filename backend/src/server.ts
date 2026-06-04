@@ -20,6 +20,16 @@ app.use(
 );
 app.use(express.json());
 
+// ── Observabilidad: log de cada request (método, ruta, status, latencia).
+// No se logean bodies ni headers → no se filtran secretos.
+app.use((req, res, next) => {
+  const t0 = Date.now();
+  res.on("finish", () => {
+    console.log(`[backend] ${req.method} ${req.path} → ${res.statusCode} (${Date.now() - t0}ms)`);
+  });
+  next();
+});
+
 app.get("/health", (_req, res) => {
   res.json({ status: "ok", chain: process.env.CHAIN_ID });
 });
@@ -29,6 +39,9 @@ app.use(
   trpcExpress.createExpressMiddleware({
     router: appRouter,
     createContext: () => createContext(),
+    onError: ({ path, error }) => {
+      console.error(`[backend] tRPC error en ${path ?? "?"}: ${error.code} — ${error.message}`);
+    },
   })
 );
 

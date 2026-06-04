@@ -21,6 +21,7 @@ Env:  DISCORD_BOT_TOKEN (req) · HERMES_URL (def http://localhost:8000)
 
 from __future__ import annotations
 
+import logging
 import os
 
 import discord
@@ -42,6 +43,9 @@ GUILD_ID = os.getenv("DISCORD_GUILD_ID", "").strip()
 RED = 0xC71828
 POSTURA_EMOJI = {"A_FAVOR": "🟢", "EN_CONTRA": "🔴", "CAUTELA": "🟡"}
 
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s discord · %(message)s")
+log = logging.getLogger("hermes.discord")
+
 intents = discord.Intents.default()
 intents.message_content = True  # privilegiado: activar en el Developer Portal
 bot = commands.Bot(command_prefix="!", intents=intents, help_command=None)
@@ -49,12 +53,15 @@ _http = httpx.AsyncClient(timeout=90.0)
 
 
 async def _get(path: str) -> dict:
+    log.info("→ GET %s", path)
     r = await _http.get(f"{HERMES_URL}{path}")
     r.raise_for_status()
     return r.json()
 
 
 async def _post(path: str, json: dict) -> dict:
+    # No logeamos el body (puede traer texto del usuario); solo la ruta.
+    log.info("→ POST %s", path)
     r = await _http.post(f"{HERMES_URL}{path}", json=json)
     r.raise_for_status()
     return r.json()
