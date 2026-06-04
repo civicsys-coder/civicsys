@@ -1,0 +1,4 @@
+# Esta carpeta contiene la memoria persistente de Hermes:
+# - MEMORY.md (general)
+# - USER.md (por usuario, GITIGNORED)
+# - sessions/ (FTS5 search, GITIGNORED)

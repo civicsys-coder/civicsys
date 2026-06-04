@@ -1,0 +1,19 @@
+{
+  "chainId": 31337,
+  "network": "localhost",
+  "deployedAt": "2026-06-04T04:35:33.579Z",
+  "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+  "contracts": {
+    "IdentitySBT": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+    "CitizenRegistry": "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512",
+    "Vote": "0x9fe46736679d2d9a65f0992f2272de9f3c7fa6e0",
+    "AnonymousVote": "0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9"
+  },
+  "seedProposal": {
+    "id": 1,
+    "title": "Demo Sprint 1 · Reforma del artículo 56 (PPT slide 6)",
+    "ipfsCid": "bafy-placeholder-sprint1-mvp",
+    "openAt": "1780547729",
+    "closeAt": "1781152529"
+  }
+}

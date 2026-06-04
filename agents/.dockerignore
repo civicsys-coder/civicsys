@@ -1,0 +1,19 @@
+# Nunca copiar al contexto de build: secretos, venv, caches, tests.
+.env
+.env.*
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+build/
+tests/
+hermes/memory/sessions/
+hermes/memory/USER.md
+Dockerfile
+.dockerignore
+README.md

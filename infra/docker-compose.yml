@@ -1,0 +1,86 @@
+# CivicSys / SSC ANTIPEREZA · Sprint 1 MVP local infrastructure
+#
+# Servicios:
+#   - postgres:      Supabase-compatible Postgres 17 con pgvector
+#   - anvil:         Foundry Anvil (EVM local · Chain ID 31337 · surrogate zkTanenbaum)
+#
+# Uso:
+#   bash infra/up.sh     # levanta los servicios
+#   bash infra/down.sh   # los apaga + opcional purga volúmenes
+#
+# NOTAS:
+#   - Postgres image incluye pgvector preinstalado.
+#   - Anvil corre standalone (sin fork de mainnet) para iteración rápida.
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    container_name: ssca-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-civicsys}
+    ports:
+      - "${POSTGRES_PORT:-54330}:5432"
+    volumes:
+      - ssca-postgres-data:/var/lib/postgresql/data
+      - ./supabase/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-civicsys}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  anvil:
+    image: ghcr.io/foundry-rs/foundry:latest
+    container_name: ssca-anvil
+    restart: unless-stopped
+    entrypoint: ["anvil"]
+    command:
+      - --host
+      - 0.0.0.0
+      - --chain-id
+      - "${ANVIL_CHAIN_ID:-31337}"
+      - --block-time
+      - "${ANVIL_BLOCK_TIME:-2}"
+      - --accounts
+      - "10"
+      - --balance
+      - "10000"
+    ports:
+      - "${ANVIL_PORT:-8545}:8545"
+
+  # Hermes — runtime de agentes (FastAPI) en contenedor AISLADO.
+  #   - Código copiado dentro de la imagen (sin volúmenes del host).
+  #   - Habla con postgres/anvil por DNS de la red Docker (no usa los puertos host).
+  #   - Su API key Gemini vive en infra/.env.hermes (gitignored), nunca en el host.
+  hermes:
+    build:
+      context: ../agents
+      dockerfile: Dockerfile
+    image: ssca-hermes:local
+    container_name: ssca-hermes
+    restart: unless-stopped
+    env_file:
+      - ./.env.hermes
+    environment:
+      CHAIN_ID: "${ANVIL_CHAIN_ID:-31337}"
+      REGISTRY_ADDRESS: "${REGISTRY_ADDRESS}"
+      VOTE_ADDRESS: "${VOTE_ADDRESS}"
+      RPC_URL: "http://anvil:8545"
+      DATABASE_URL: "postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-civicsys}"
+      API_HOST: "0.0.0.0"
+      API_PORT: "8000"
+      LLM_MODEL_GEMINI: "${LLM_MODEL_GEMINI:-gemini-3.5-flash}"
+    ports:
+      - "${HERMES_PORT:-8000}:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      anvil:
+        condition: service_started
+
+volumes:
+  ssca-postgres-data:
+    name: ssca-postgres-data

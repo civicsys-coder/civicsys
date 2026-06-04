@@ -1,0 +1,57 @@
+# Node / Hardhat
+node_modules/
+artifacts/
+cache/
+typechain-types/
+coverage/
+coverage.json
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+build/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Claude Code local config
+.claude/settings.local.json
+
+# Secrets / keys
+*.pem
+*.key
+secrets/
+.secrets/
+
+# Hermes memory (mantener estructura, ignorar contenido sensible)
+agents/hermes/memory/sessions/
+agents/hermes/memory/USER.md
+!agents/hermes/memory/.gitkeep
+
+# Build outputs
+*.log
+*.tsbuildinfo
+.next/
+out/
+
+# Deployments — los .json sí se versionan (direcciones públicas)
+# blockchain/deployments/  <- NO ignorar

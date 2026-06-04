@@ -1,0 +1,132 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  blockchain:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: blockchain
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: blockchain/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm compile
+      - run: pnpm test:ci
+        env:
+          SOLIDITY_COVERAGE: "true"
+      - name: Upload coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: blockchain-coverage
+          path: blockchain/coverage/
+          retention-days: 7
+
+  backend-node:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: backend/pnpm-lock.yaml
+      # ABIs deben existir en shared/abis/ — los regeneramos compilando contracts
+      - name: Compile contracts to populate shared/abis
+        working-directory: blockchain
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm compile
+          mkdir -p ../shared/abis
+          cp artifacts/contracts/CitizenRegistry.sol/CitizenRegistry.json ../shared/abis/
+          cp artifacts/contracts/Vote.sol/Vote.json ../shared/abis/
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test:ci
+
+  backend-python:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: agents
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -e ".[dev]"
+      - run: pytest
+        env:
+          CHAIN_ID: "31337"
+          REGISTRY_ADDRESS: "0x0000000000000000000000000000000000000001"
+          VOTE_ADDRESS: "0x0000000000000000000000000000000000000002"
+          RPC_URL: "http://localhost:8545"
+          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/civicsys"
+          ANTHROPIC_API_KEY: "sk-ant-fake-ci"
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend/civicsys
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: frontend/civicsys/pnpm-lock.yaml
+      # Frontend importa shared/abis + blockchain/deployments — necesitamos generarlos
+      - name: Compile contracts + write mock deployment
+        run: |
+          cd ../../blockchain
+          pnpm install --frozen-lockfile
+          pnpm compile
+          mkdir -p ../shared/abis
+          cp artifacts/contracts/CitizenRegistry.sol/CitizenRegistry.json ../shared/abis/
+          cp artifacts/contracts/Vote.sol/Vote.json ../shared/abis/
+          mkdir -p deployments
+          cat > deployments/localhost.json <<'JSON'
+          {
+            "chainId": 31337,
+            "network": "localhost",
+            "contracts": {
+              "CitizenRegistry": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+              "Vote": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
+            },
+            "seedProposal": {
+              "id": 1,
+              "title": "CI mock",
+              "ipfsCid": "",
+              "openAt": "0",
+              "closeAt": "999999999"
+            }
+          }
+          JSON
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test:ci

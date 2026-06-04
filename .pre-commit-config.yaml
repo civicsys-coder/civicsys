@@ -1,0 +1,17 @@
+# Pre-commit hooks para CivicSys
+#
+# Instalacion (manual, opcional):
+#   pip install pre-commit
+#   pre-commit install
+#
+# La instalacion del binario gitleaks se hace via pre-commit cuando corre la
+# primera vez. Si el operador no tiene pre-commit instalado, ningun hook se
+# activa — es seguro tener este archivo en el repo aunque no este activado.
+
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.18.4
+    hooks:
+      - id: gitleaks
+        name: gitleaks (scan for secrets)
+        description: Detect hardcoded secrets in commits
