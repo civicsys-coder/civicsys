@@ -22,4 +22,5 @@ EXPOSE 8000
 RUN useradd --create-home --uid 10001 hermes && chown -R hermes:hermes /app
 USER hermes
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Railway inyecta $PORT; local (docker compose) cae a 8000.
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
