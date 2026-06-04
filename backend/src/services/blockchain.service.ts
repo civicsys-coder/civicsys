@@ -11,8 +11,8 @@
 
 import { createPublicClient, http, type Address, type PublicClient } from "viem";
 import { CHAINS_BY_ID, isSupportedChainId } from "../lib/chains.js";
-import CitizenRegistryArtifact from "../../../shared/abis/CitizenRegistry.json" with { type: "json" };
-import VoteArtifact from "../../../shared/abis/Vote.json" with { type: "json" };
+import CitizenRegistryArtifact from "../abis/CitizenRegistry.json" with { type: "json" };
+import VoteArtifact from "../abis/Vote.json" with { type: "json" };
 
 export interface Proposal {
   id: bigint;
