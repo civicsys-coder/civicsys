@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 import logging
+import os
 import re
 import time
 
@@ -22,10 +23,13 @@ from app.toxica import LaToxica
 
 app = FastAPI(title="CivicSys Agents (Hermes)", version="0.3.0")
 
-# El frontend (Next.js en :3000) llama a Hermes directamente desde el navegador.
+# El frontend (Next.js) llama a Hermes directamente desde el navegador.
+# Orígenes: los de CORS_ORIGINS (coma-separados) + cualquier deploy de Vercel (*.vercel.app).
+_cors_env = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_origins=[o.strip() for o in _cors_env.split(",") if o.strip()],
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_methods=["*"],
     allow_headers=["*"],
 )
