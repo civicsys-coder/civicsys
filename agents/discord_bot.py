@@ -138,18 +138,31 @@ async def votar(ctx: commands.Context, id: int = 1) -> None:
     await ctx.reply(embed=e)
 
 
-@bot.hybrid_command(name="registrarse", description="Registro único cross-canal")
+@bot.hybrid_command(name="registrarse", description="Cómo obtener tu Cédula Cívica (registro SEGURO en la web)")
 async def registrarse(ctx: commands.Context) -> None:
     await ctx.defer()
+    # Dedupe cross-canal (registro único). NO toca DNI, foto ni claves.
+    dedupe = ""
     try:
         d = await post("/agents/channels/register", {"channel": "discord", "person_ref": str(ctx.author.id)})
-    except Exception as e:  # noqa: BLE001
-        await ctx.reply(f"⚠ no pude contactar a Hermes ({HERMES_URL}): {e}")
-        return
-    if d.get("accepted"):
-        await ctx.reply("✅ Registrado vía **Discord**. Quedás bloqueado para re-registrarte en otro canal.")
-    else:
-        await ctx.reply(f"⚠️ {d.get('reason', 'no aceptado')}")
+        dedupe = "✅ canal Discord registrado" if d.get("accepted") else f"ℹ️ {d.get('reason', 'ya registrado')}"
+    except Exception:  # noqa: BLE001
+        dedupe = ""  # si Hermes no responde, igual mostramos el link seguro
+    e = discord.Embed(
+        title="🪪 Obtené tu Cédula Cívica",
+        color=RED,
+        description=(
+            "El registro se hace en la **web**, NO por Discord (es lo seguro):\n\n"
+            f"👉 **{APP_URL}/registro**\n\n"
+            "Ahí tu **DNI se hashea en tu navegador** y tu **wallet se genera y cifra en tu "
+            "dispositivo** — ni Discord ni el servidor ven tu documento ni tu clave privada. "
+            "Después minteás tu Cédula firmando vos.\n\n"
+            "⚠️ **Nunca** mandes tu DNI, foto o clave privada por chat."
+        ),
+    )
+    if dedupe:
+        e.set_footer(text=dedupe)
+    await ctx.reply(embed=e)
 
 
 @bot.event
