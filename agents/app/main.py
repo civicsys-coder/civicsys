@@ -246,7 +246,10 @@ class ToxicaAnalyzeRequest(BaseModel):
 async def toxica_analyze(req: ToxicaAnalyzeRequest):
     p = mockdata.get_proposal(req.proposal_id) or mockdata.PROPOSALS[0]
     tally = {"yes": p["yes"], "no": p["no"], "abstain": p["abstain"]}
-    r = await LaToxica(llm=_build_llm()).analyze_session(req.proposal_id, req.transcript, tally)
+    # Usa el contexto REAL del Congreso de la propuesta (si existe) → La Tóxica compara
+    # la acción legislativa real contra el voto ciudadano real. Fallback: transcript del request.
+    transcript = p.get("congress_context") or req.transcript
+    r = await LaToxica(llm=_build_llm()).analyze_session(req.proposal_id, transcript, tally)
     log.info("toxica prop=%s → provider=%s approved=%s", r.proposal_id, r.provider, r.approved)
     # Devuelve el BORRADOR (approved=False). Publicar es una acción humana aparte.
     return {
