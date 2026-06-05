@@ -7,7 +7,7 @@ import { privateKeyToAccount } from "viem/accounts";
 import { Button } from "@/components/ui/button";
 import { MatrixRain } from "@/components/MatrixRain";
 import { AnonymousVoteAbi, getAddresses } from "@/lib/contracts";
-import { anvilLocal } from "@/lib/wagmi";
+import { activeChain, ACTIVE_CHAIN_ID } from "@/lib/wagmi";
 import { computeNullifier, getOrCreateIdentitySecret } from "@/lib/nullifier";
 import { logger } from "@/lib/logger";
 
@@ -29,14 +29,14 @@ export default function VotacionPage() {
 
   const addresses = (() => {
     try {
-      return getAddresses(31337);
+      return getAddresses(ACTIVE_CHAIN_ID);
     } catch {
       return null;
     }
   })();
   const anon = addresses?.AnonymousVote as `0x${string}` | undefined;
 
-  const pub = createPublicClient({ chain: anvilLocal, transport: http() });
+  const pub = createPublicClient({ chain: activeChain, transport: http() });
 
   async function refresh() {
     if (!anon) return;
@@ -69,7 +69,7 @@ export default function VotacionPage() {
       const secret = getOrCreateIdentitySecret();
       const nullifier = computeNullifier(secret, PROPOSAL_ID);
       const account = privateKeyToAccount(RELAYER_PK);
-      const wallet = createWalletClient({ account, chain: anvilLocal, transport: http() });
+      const wallet = createWalletClient({ account, chain: activeChain, transport: http() });
       const hash = await wallet.writeContract({
         address: anon,
         abi: AnonymousVoteAbi,

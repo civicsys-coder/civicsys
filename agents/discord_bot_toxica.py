@@ -25,7 +25,7 @@ import os
 import discord
 from discord.ext import commands
 
-from discord_common import GUILD_ID, HERMES_URL, clip, post
+from discord_common import GUILD_ID, HERMES_URL, anchor_toxica, clip, post
 
 TOKEN = os.getenv("DISCORD_TOXICA_TOKEN", "").strip()
 RED = 0xE02134
@@ -98,7 +98,23 @@ async def toxica(ctx: commands.Context, id: int = 1, *, transcripcion: str = "")
         e.add_field(name="🏛️ El senado", value=clip(d["congress_action"], 300), inline=True)
     if d.get("gap_summary"):
         e.add_field(name="⚡ La brecha", value=clip(d["gap_summary"], 400), inline=False)
-    e.set_footer(text=f"BORRADOR · aprobación humana antes de publicar · proveedor {d.get('provider', '?')}")
+    # Anclaje on-chain (zkSYS): deja una traza inmutable y verificable del reporte.
+    anchor = await anchor_toxica(
+        id,
+        d.get("gap_summary") or d.get("citizen_position") or "",
+        d.get("public_post") or "",
+    )
+    if anchor and anchor.get("explorerTx"):
+        e.add_field(
+            name="⛓️ Anclado en blockchain (zkSYS)",
+            value=f"[Ver el reporte on-chain ↗]({anchor['explorerTx']})",
+            inline=False,
+        )
+        e.set_footer(text=f"Anclado inmutable on-chain · BORRADOR · proveedor {d.get('provider', '?')}")
+    else:
+        e.set_footer(
+            text=f"BORRADOR · aprobación humana antes de publicar · proveedor {d.get('provider', '?')}"
+        )
     await ctx.reply(embed=e)
 
 

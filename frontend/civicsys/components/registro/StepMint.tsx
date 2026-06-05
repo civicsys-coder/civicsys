@@ -6,7 +6,8 @@ import { privateKeyToAccount } from "viem/accounts";
 import { Button } from "@/components/ui/button";
 import { IdentitySBTAbi, getAddresses } from "@/lib/contracts";
 import { registerFace } from "@/lib/identity-api";
-import { anvilLocal } from "@/lib/wagmi";
+import { dripGas } from "@/lib/faucet-api";
+import { activeChain, ACTIVE_CHAIN_ID } from "@/lib/wagmi";
 import { useWizard } from "./WizardProvider";
 import { CedulaCard } from "./CedulaCard";
 
@@ -18,6 +19,7 @@ export function StepMint() {
   const { data, reset } = useWizard();
   const [state, setState] = useState<"idle" | "minting" | "done" | "error">("idle");
   const [tokenId, setTokenId] = useState<bigint | null>(null);
+  const [txHash, setTxHash] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const mintedAt = new Date().toISOString().slice(0, 10);
 
@@ -26,7 +28,7 @@ export function StepMint() {
     setError(null);
     try {
       const account = privateKeyToAccount(data.privateKey!);
-      const addresses = getAddresses(31337);
+      const addresses = getAddresses(ACTIVE_CHAIN_ID);
       const sbt = addresses.IdentitySBT as `0x${string}`;
       // Metadata pública SIN PII ni commitments (hardening post-auditoría MNEMA):
       // dniHash/faceCommitment quedaban legibles on-chain en el tokenURI y, con el
@@ -44,8 +46,16 @@ export function StepMint() {
           })
         );
 
-      const wallet = createWalletClient({ account, chain: anvilLocal, transport: http() });
-      const pub = createPublicClient({ chain: anvilLocal, transport: http() });
+      // La wallet recién creada arranca con 0 gas en testnet: pedimos un drip al
+      // relayer del backend para que pueda pagar su propio mint (self-service).
+      try {
+        await dripGas(account.address);
+      } catch (e) {
+        if (ACTIVE_CHAIN_ID !== 31337) throw e; // en testnet el gas es imprescindible
+      }
+
+      const wallet = createWalletClient({ account, chain: activeChain, transport: http() });
+      const pub = createPublicClient({ chain: activeChain, transport: http() });
 
       const hash = await wallet.writeContract({
         address: sbt,
@@ -53,6 +63,7 @@ export function StepMint() {
         functionName: "mint",
         args: [data.dniHash, data.faceCommitment, uri],
       });
+      setTxHash(hash);
       await pub.waitForTransactionReceipt({ hash });
 
       const tid = (await pub.readContract({
@@ -77,10 +88,21 @@ export function StepMint() {
   }
 
   if (state === "done" && data.address && tokenId !== null) {
+    const explorerUrl = activeChain.blockExplorers?.default?.url;
     return (
       <div className="space-y-4">
         <p className="text-primary">¡Cédula minteada! Ya sos un ciudadano único verificado.</p>
         <CedulaCard tokenId={tokenId} holder={data.address} mintedAt={mintedAt} />
+        {txHash && explorerUrl && (
+          <a
+            href={`${explorerUrl}/tx/${txHash}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block text-sm underline hover:text-primary"
+          >
+            Ver tu inscripción en la blockchain ↗
+          </a>
+        )}
         <Button variant="outline" onClick={() => reset()}>
           Registrar otra identidad
         </Button>

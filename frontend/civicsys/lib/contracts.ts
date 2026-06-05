@@ -9,6 +9,7 @@ import VoteArtifact from "./abi/Vote.json";
 import IdentitySBTArtifact from "./abi/IdentitySBT.json";
 import AnonymousVoteArtifact from "./abi/AnonymousVote.json";
 import LocalDeployment from "./abi/localhost.json";
+import ZkTanenbaumDeployment from "./abi/zkTanenbaum.json";
 import type { SupportedChainId } from "./wagmi";
 
 export const CitizenRegistryAbi = CitizenRegistryArtifact.abi;
@@ -35,6 +36,7 @@ interface DeploymentJson {
 
 const DEPLOYMENTS: Partial<Record<SupportedChainId, DeploymentJson>> = {
   31337: LocalDeployment as DeploymentJson,
+  57057: ZkTanenbaumDeployment as DeploymentJson,
 };
 
 export function getAddresses(chainId: SupportedChainId) {

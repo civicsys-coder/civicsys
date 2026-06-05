@@ -35,3 +35,9 @@ export const wagmiConfig = createConfig({
 
 export const SUPPORTED_CHAIN_IDS = [31337, 57057] as const;
 export type SupportedChainId = (typeof SUPPORTED_CHAIN_IDS)[number];
+
+// Chain ACTIVA para escrituras (mint de Cédula, voto). En producción = zkSYS
+// testnet (57057). Para dev local contra Anvil, poné NEXT_PUBLIC_CHAIN_ID=31337.
+export const ACTIVE_CHAIN_ID = (Number(process.env.NEXT_PUBLIC_CHAIN_ID) ||
+  57057) as SupportedChainId;
+export const activeChain = ACTIVE_CHAIN_ID === 31337 ? anvilLocal : zkTanenbaum;

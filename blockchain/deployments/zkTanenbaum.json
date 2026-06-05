@@ -1,0 +1,27 @@
+{
+  "chainId": 57057,
+  "network": "zkTanenbaum",
+  "deployedAt": "2026-06-05T02:12:04.487Z",
+  "deployer": "0x5eCfe152eF526574851619303b76e7da2f2E1255",
+  "contracts": {
+    "IdentitySBT": "0x2a5343908d56ae080e961cae602b4189b45be4d6",
+    "CitizenRegistry": "0x96c1967dbc295ae771b6f2aa177af346069bc0d3",
+    "Vote": "0xd0396488b2bfb9ba608c8373e1273839e5015e8f",
+    "AnonymousVote": "0x452085aa0f7d580ee187408b9d6573a17fe8ca63",
+    "AccountabilityLog": "0xe4de505749f3e1537cfeeb925ff2b11d02cd5533"
+  },
+  "seedProposal": {
+    "id": 1,
+    "title": "Demo Sprint 1 · Reforma del artículo 56 (PPT slide 6)",
+    "ipfsCid": "bafy-placeholder-sprint1-mvp",
+    "openAt": "1780625505",
+    "closeAt": "1781230305"
+  },
+  "explorer": {
+    "IdentitySBT": "https://explorer-zk.tanenbaum.io/address/0x2a5343908d56ae080e961cae602b4189b45be4d6",
+    "CitizenRegistry": "https://explorer-zk.tanenbaum.io/address/0x96c1967dbc295ae771b6f2aa177af346069bc0d3",
+    "Vote": "https://explorer-zk.tanenbaum.io/address/0xd0396488b2bfb9ba608c8373e1273839e5015e8f",
+    "AnonymousVote": "https://explorer-zk.tanenbaum.io/address/0x452085aa0f7d580ee187408b9d6573a17fe8ca63",
+    "AccountabilityLog": "https://explorer-zk.tanenbaum.io/address/0xe4de505749f3e1537cfeeb925ff2b11d02cd5533"
+  }
+}

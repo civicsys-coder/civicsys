@@ -6,15 +6,25 @@ import cors from "cors";
 import * as trpcExpress from "@trpc/server/adapters/express";
 import { appRouter } from "./routers/_app.js";
 import { createContext } from "./context/trpc.context.js";
+import { faucetRouter } from "./faucet.js";
+import { accountabilityRouter } from "./accountability.js";
 
 const PORT = Number(process.env.PORT ?? 4000);
 const CORS_ORIGIN = process.env.CORS_ORIGIN ?? "http://localhost:3000";
 
 const app = express();
 
+const allowedOrigins = CORS_ORIGIN.split(",").map((s) => s.trim());
 app.use(
   cors({
-    origin: CORS_ORIGIN.split(",").map((s) => s.trim()),
+    // Orígenes de CORS_ORIGIN (exactos) + cualquier deploy de Vercel (*.vercel.app).
+    origin: (origin, cb) => {
+      if (!origin) return cb(null, true);
+      if (allowedOrigins.includes(origin) || /^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(origin)) {
+        return cb(null, true);
+      }
+      cb(null, false);
+    },
     credentials: true,
   })
 );
@@ -33,6 +43,11 @@ app.use((req, res, next) => {
 app.get("/health", (_req, res) => {
   res.json({ status: "ok", chain: process.env.CHAIN_ID });
 });
+
+// Relayer (testnet): drip de gas para inscripción self-service + anclaje on-chain
+// de los reportes de La Tóxica.
+app.use("/faucet", faucetRouter);
+app.use("/accountability", accountabilityRouter);
 
 app.use(
   "/trpc",
