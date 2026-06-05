@@ -11,7 +11,7 @@ Cámara cívica deliberativa sobre **Syscoin** (L1 EVM-compatible) vía la edgec
 
 | Recurso | Enlace |
 |---------|--------|
-| 🎬 Video de presentación | <https://youtu.be/S_Mo-UMa_vI> |
+| 🎬 Video de presentación | <https://www.youtube.com/watch?v=47m9dobD-nE> |
 | 📄 Whitepaper (repo) | [CivicSys_Whitepaper.md](CivicSys_Whitepaper.md) · [PDF](CivicSys_Whitepaper.pdf) |
 | 📁 Whitepaper + presentación (Drive) | <https://drive.google.com/drive/folders/1UIZcxoYdc3N_TJJYyhly8sdu9nVvhahm> |
 
@@ -19,7 +19,7 @@ Cámara cívica deliberativa sobre **Syscoin** (L1 EVM-compatible) vía la edgec
 
 | Plataforma       | Enlace                                                                          |
 | ---------------- | ------------------------------------------------------------------------------- |
-| 🎥 YouTube       | [youtu.be/47m9dobD-nE](https://youtu.be/47m9dobD-nE?si=CO8_GwM7ADbqxBX8)      |
+| 🎥 YouTube       | [youtube.com/@CivicSys](https://www.youtube.com/@CivicSys)                     |
 | 🐦 X / Twitter   | [x.com/civicsyspe](https://x.com/civicsyspe)                                   |
 | 📘 Facebook      | [facebook.com/CivicSys](https://www.facebook.com/share/194c7X6dT4/)            |
 | 📸 Instagram     | [instagram.com/civicsys](https://www.instagram.com/civicsys?igsh=NGF6NmNnbTd1dm45) |
