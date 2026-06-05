@@ -7,6 +7,16 @@
 
 Cámara cívica deliberativa sobre **Syscoin** (L1 EVM-compatible) vía la edgechain **zkSYS Testnet (zkTanenbaum, Chain ID 57057)**, coordinada por un agente maestro **Hermes** con identidad y memoria propias.
 
+## Enlaces oficiales
+
+| Recurso | Enlace |
+|---------|--------|
+| 📺 Canal oficial YouTube | <https://www.youtube.com/@CivicSys> |
+| 🐦 X (Twitter) | <https://x.com/civicsyspe> |
+| 🎬 Video de presentación | <https://youtu.be/S_Mo-UMa_vI> |
+| 📄 Whitepaper (repo) | [CivicSys_Whitepaper.md](CivicSys_Whitepaper.md) · [PDF](CivicSys_Whitepaper.pdf) |
+| 📁 Whitepaper + presentación (Drive) | <https://drive.google.com/drive/folders/1UIZcxoYdc3N_TJJYyhly8sdu9nVvhahm> |
+
 ## Principio
 
 > La IA asesora. El ciudadano supervisa. El blockchain firma. Hermes orquesta — y todo queda trazable.
