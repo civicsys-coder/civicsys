@@ -1,6 +1,6 @@
 # CivicSys — SSC ANTIPEREZA
 
-[![CI](https://github.com/SandroChavez/CivicSys/actions/workflows/ci.yml/badge.svg)](https://github.com/SandroChavez/CivicSys/actions/workflows/ci.yml)
+[![CI](https://github.com/civicsys-coder/civicsys/actions/workflows/ci.yml/badge.svg)](https://github.com/civicsys-coder/civicsys/actions/workflows/ci.yml)
 
 > **Sistema de Supervisión Ciudadana Antipereza**
 > Hackathon Syscoin / zkSYS Tanenbaum 2026 · Proof-of-Builders UCV
