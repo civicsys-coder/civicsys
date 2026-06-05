@@ -15,8 +15,10 @@ describe("contracts.ts loaders", () => {
     expect(a.Vote).toMatch(/^0x[a-fA-F0-9]{40}$/);
   });
 
-  it("getAddresses(57057) tira si no hay deployment todavia", () => {
-    expect(() => getAddresses(57057)).toThrow(/No deployment/);
+  it("getAddresses(57057) devuelve direcciones validas (deploy en zkTanenbaum)", () => {
+    const a = getAddresses(57057);
+    expect(a.CitizenRegistry).toMatch(/^0x[a-fA-F0-9]{40}$/);
+    expect(a.Vote).toMatch(/^0x[a-fA-F0-9]{40}$/);
   });
 
   it("getSeedProposal(31337) devuelve la propuesta seed", () => {
@@ -26,7 +28,10 @@ describe("contracts.ts loaders", () => {
     expect(p?.title.length).toBeGreaterThan(0);
   });
 
-  it("getSeedProposal(57057) devuelve null si no hay deployment", () => {
-    expect(getSeedProposal(57057)).toBeNull();
+  it("getSeedProposal(57057) devuelve la propuesta seed (deploy en zkTanenbaum)", () => {
+    const p = getSeedProposal(57057);
+    expect(p).not.toBeNull();
+    expect(p?.id).toBe(1);
+    expect(p?.title.length).toBeGreaterThan(0);
   });
 });

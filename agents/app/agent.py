@@ -60,9 +60,8 @@ class HermesAgent:
         return {"yes": p["yes"], "no": p["no"], "abstain": p["abstain"]}
 
     def top_proposal(self) -> dict | None:
-        openp = [p for p in mockdata.PROPOSALS if p["status"] == "abierta"]
         return max(
-            openp,
+            mockdata.PROPOSALS,
             key=lambda p: _pct(p["yes"], p["yes"] + p["no"] + p["abstain"]),
             default=None,
         )
@@ -92,10 +91,15 @@ class HermesAgent:
         if re.search(r"(lider|m[aá]s apoyo|mayor apoyo|mayor[ií]a|gana|top|cu[aá]l va|cu[aá]l lidera)", msg):
             steps.append(AgentStep("list_proposals", {}, f"{len(mockdata.PROPOSALS)} propuestas"))
             top = self.top_proposal()
+            if top is None:
+                return AgentResult(
+                    answer="No tengo propuestas cargadas para comparar el apoyo ciudadano.",
+                    steps=steps, provider="hermes", confidence=6,
+                )
             steps.append(AgentStep("top_proposal", {}, f"#{top['id']} {top['title']}"))
             return await self._analyze(
                 top, steps=steps,
-                prefix=f"La propuesta con más apoyo entre las abiertas es la #{top['id']}.",
+                prefix=f"La propuesta con más apoyo ciudadano es la #{top['id']}.",
             )
 
         # intent: una propuesta concreta (#n / "propuesta n" / "artículo 56")
@@ -223,14 +227,14 @@ class HermesAgent:
 
     def _mock_overview(self) -> str:
         ps = mockdata.PROPOSALS
-        openp = [p for p in ps if p["status"] == "abierta"]
+        en_debate = [p for p in ps if "debate" in p["status"].lower()]
         top = self.top_proposal()
         contested = min(ps, key=lambda p: abs(p["yes"] - p["no"]))
         total_votes = sum(p["yes"] + p["no"] + p["abstain"] for p in ps)
         votos_fmt = f"{total_votes:,}".replace(",", ".")
         return (
-            f"Panorama general: {len(ps)} propuestas en seguimiento ({len(openp)} abiertas, "
-            f"{len(ps) - len(openp)} cerrada/s) con {votos_fmt} votos acumulados. "
+            f"Panorama general: {len(ps)} leyes/proyectos en seguimiento ({len(en_debate)} en debate) "
+            f"con {votos_fmt} votos acumulados. "
             f"El mayor respaldo es para «{top['title']}», que se perfila como la prioridad ciudadana del momento. "
             f"En el otro extremo, «{contested['title']}» es la más disputada y exige cautela: "
             f"ahí la ciudadanía está dividida. "
