@@ -30,7 +30,10 @@ class Settings(BaseSettings):
     openrouter_api_key: str | None = None
     llm_model_gemini: str = "gemini-3.5-flash"
     llm_model_anthropic: str = "claude-sonnet-4-6"
-    llm_timeout_seconds: int = 30
+    # 30s era muy corto: gemini-3.5-flash a veces tarda 30-60s y caía a "simulado"
+    # (~2 de 3 veces). Con 60s el provider gemini responde 5/5. Override por env
+    # LLM_TIMEOUT_SECONDS si hace falta.
+    llm_timeout_seconds: int = 60
 
     # Integridad de reportes (ADR-002).
     # Default: cadena vacia -> persistencia HMAC deshabilitada (Sprint 02 todavia
