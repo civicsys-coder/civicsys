@@ -13,6 +13,9 @@ const PORT = Number(process.env.PORT ?? 4000);
 const CORS_ORIGIN = process.env.CORS_ORIGIN ?? "http://localhost:3000";
 
 const app = express();
+// Detrás del proxy de Railway: req.ip = IP real del cliente (X-Forwarded-For),
+// para que el límite por-IP del faucet no agrupe a todos bajo la IP del proxy.
+app.set("trust proxy", true);
 
 const allowedOrigins = CORS_ORIGIN.split(",").map((s) => s.trim());
 app.use(
