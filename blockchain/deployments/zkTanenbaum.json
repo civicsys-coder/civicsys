@@ -1,27 +1,27 @@
 {
   "chainId": 57057,
   "network": "zkTanenbaum",
-  "deployedAt": "2026-06-05T02:12:04.487Z",
-  "deployer": "0x5eCfe152eF526574851619303b76e7da2f2E1255",
+  "deployedAt": "2026-06-06T01:15:57.908Z",
+  "deployer": "0x55cfaf9ec4426C3079Eb1B6Fdb6a52e2b2060261",
   "contracts": {
-    "IdentitySBT": "0x2a5343908d56ae080e961cae602b4189b45be4d6",
-    "CitizenRegistry": "0x96c1967dbc295ae771b6f2aa177af346069bc0d3",
-    "Vote": "0xd0396488b2bfb9ba608c8373e1273839e5015e8f",
-    "AnonymousVote": "0x452085aa0f7d580ee187408b9d6573a17fe8ca63",
-    "AccountabilityLog": "0xe4de505749f3e1537cfeeb925ff2b11d02cd5533"
+    "IdentitySBT": "0xa794fc9f20ba3a6a4698238effba3487e8f90c80",
+    "CitizenRegistry": "0x4f50fcd78f5951c6a7c0b8e940ed8003130bca5a",
+    "Vote": "0x1f0ecd77002e134da59247944e5a2fdb24987e24",
+    "AnonymousVote": "0x1e9b1f239fdca5d90fe94a9049a06c88d1efdef4",
+    "AccountabilityLog": "0x12fbb1210ee31ff12085bc083f8258a74d8d6bf3"
   },
   "seedProposal": {
     "id": 1,
     "title": "Demo Sprint 1 · Reforma del artículo 56 (PPT slide 6)",
     "ipfsCid": "bafy-placeholder-sprint1-mvp",
-    "openAt": "1780625505",
-    "closeAt": "1781230305"
+    "openAt": "1780708539",
+    "closeAt": "1781313339"
   },
   "explorer": {
-    "IdentitySBT": "https://explorer-zk.tanenbaum.io/address/0x2a5343908d56ae080e961cae602b4189b45be4d6",
-    "CitizenRegistry": "https://explorer-zk.tanenbaum.io/address/0x96c1967dbc295ae771b6f2aa177af346069bc0d3",
-    "Vote": "https://explorer-zk.tanenbaum.io/address/0xd0396488b2bfb9ba608c8373e1273839e5015e8f",
-    "AnonymousVote": "https://explorer-zk.tanenbaum.io/address/0x452085aa0f7d580ee187408b9d6573a17fe8ca63",
-    "AccountabilityLog": "https://explorer-zk.tanenbaum.io/address/0xe4de505749f3e1537cfeeb925ff2b11d02cd5533"
+    "IdentitySBT": "https://explorer-zk.tanenbaum.io/address/0xa794fc9f20ba3a6a4698238effba3487e8f90c80",
+    "CitizenRegistry": "https://explorer-zk.tanenbaum.io/address/0x4f50fcd78f5951c6a7c0b8e940ed8003130bca5a",
+    "Vote": "https://explorer-zk.tanenbaum.io/address/0x1f0ecd77002e134da59247944e5a2fdb24987e24",
+    "AnonymousVote": "https://explorer-zk.tanenbaum.io/address/0x1e9b1f239fdca5d90fe94a9049a06c88d1efdef4",
+    "AccountabilityLog": "https://explorer-zk.tanenbaum.io/address/0x12fbb1210ee31ff12085bc083f8258a74d8d6bf3"
   }
 }
