@@ -44,6 +44,21 @@ const config: HardhatUserConfig = {
     cache: "./cache",
     artifacts: "./artifacts",
   },
+  // Verificación de código en el explorer (Blockscout de zkTanenbaum, API
+  // compatible-Etherscan en /api). Blockscout no exige API key real.
+  etherscan: {
+    apiKey: { zkTanenbaum: "no-api-key-needed" },
+    customChains: [
+      {
+        network: "zkTanenbaum",
+        chainId: 57057,
+        urls: {
+          apiURL: "https://explorer-zk.tanenbaum.io/api",
+          browserURL: "https://explorer-zk.tanenbaum.io",
+        },
+      },
+    ],
+  },
 };
 
 export default config;
