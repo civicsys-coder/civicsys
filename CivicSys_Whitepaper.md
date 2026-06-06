@@ -206,13 +206,15 @@ All five are deployed and verifiable — addresses and explorer links in §7 and
 
 Most whitepapers describe intentions. This section describes **state**. Deployed **June 5, 2026** to zkTanenbaum (Chain ID 57057):
 
-| Contract | Address (live) |
+| Contract | Address (live, source-verified) |
 |---|---|
-| **AccountabilityLog** | [`0xe4de505749f3e1537cfeeb925ff2b11d02cd5533`](https://explorer-zk.tanenbaum.io/address/0xe4de505749f3e1537cfeeb925ff2b11d02cd5533) |
-| **IdentitySBT** | [`0x2a5343908d56ae080e961cae602b4189b45be4d6`](https://explorer-zk.tanenbaum.io/address/0x2a5343908d56ae080e961cae602b4189b45be4d6) |
-| **Vote** | [`0xd0396488b2bfb9ba608c8373e1273839e5015e8f`](https://explorer-zk.tanenbaum.io/address/0xd0396488b2bfb9ba608c8373e1273839e5015e8f) |
-| **AnonymousVote** | [`0x452085aa0f7d580ee187408b9d6573a17fe8ca63`](https://explorer-zk.tanenbaum.io/address/0x452085aa0f7d580ee187408b9d6573a17fe8ca63) |
-| **CitizenRegistry** | [`0x96c1967dbc295ae771b6f2aa177af346069bc0d3`](https://explorer-zk.tanenbaum.io/address/0x96c1967dbc295ae771b6f2aa177af346069bc0d3) |
+| **AccountabilityLog** | [`0x12fbb1210ee31ff12085bc083f8258a74d8d6bf3`](https://explorer-zk.tanenbaum.io/address/0x12fbb1210ee31ff12085bc083f8258a74d8d6bf3#code) |
+| **IdentitySBT** | [`0xa794fc9f20ba3a6a4698238effba3487e8f90c80`](https://explorer-zk.tanenbaum.io/address/0xa794fc9f20ba3a6a4698238effba3487e8f90c80#code) |
+| **Vote** | [`0x1f0ecd77002e134da59247944e5a2fdb24987e24`](https://explorer-zk.tanenbaum.io/address/0x1f0ecd77002e134da59247944e5a2fdb24987e24#code) |
+| **AnonymousVote** | [`0x1e9b1f239fdca5d90fe94a9049a06c88d1efdef4`](https://explorer-zk.tanenbaum.io/address/0x1e9b1f239fdca5d90fe94a9049a06c88d1efdef4#code) |
+| **CitizenRegistry** | [`0x4f50fcd78f5951c6a7c0b8e940ed8003130bca5a`](https://explorer-zk.tanenbaum.io/address/0x4f50fcd78f5951c6a7c0b8e940ed8003130bca5a#code) |
+
+> Deployer: `0x55cfaf9ec4426C3079Eb1B6Fdb6a52e2b2060261`. All five contracts are **verified** on the Blockscout explorer (source readable under the `Code` tab).
 
 Also live, today:
 
@@ -331,15 +333,15 @@ The people vote. The AI deliberates with dissent. The blockchain signs. **And no
 
 ### A. Deployed contracts — zkSYS Testnet (zkTanenbaum, Chain ID 57057)
 
-| Contract | Address | Explorer |
+| Contract | Address | Explorer (verified source) |
 |---|---|---|
-| AccountabilityLog | `0xe4de505749f3e1537cfeeb925ff2b11d02cd5533` | [link](https://explorer-zk.tanenbaum.io/address/0xe4de505749f3e1537cfeeb925ff2b11d02cd5533) |
-| IdentitySBT | `0x2a5343908d56ae080e961cae602b4189b45be4d6` | [link](https://explorer-zk.tanenbaum.io/address/0x2a5343908d56ae080e961cae602b4189b45be4d6) |
-| Vote | `0xd0396488b2bfb9ba608c8373e1273839e5015e8f` | [link](https://explorer-zk.tanenbaum.io/address/0xd0396488b2bfb9ba608c8373e1273839e5015e8f) |
-| AnonymousVote | `0x452085aa0f7d580ee187408b9d6573a17fe8ca63` | [link](https://explorer-zk.tanenbaum.io/address/0x452085aa0f7d580ee187408b9d6573a17fe8ca63) |
-| CitizenRegistry | `0x96c1967dbc295ae771b6f2aa177af346069bc0d3` | [link](https://explorer-zk.tanenbaum.io/address/0x96c1967dbc295ae771b6f2aa177af346069bc0d3) |
+| AccountabilityLog | `0x12fbb1210ee31ff12085bc083f8258a74d8d6bf3` | [link](https://explorer-zk.tanenbaum.io/address/0x12fbb1210ee31ff12085bc083f8258a74d8d6bf3#code) |
+| IdentitySBT | `0xa794fc9f20ba3a6a4698238effba3487e8f90c80` | [link](https://explorer-zk.tanenbaum.io/address/0xa794fc9f20ba3a6a4698238effba3487e8f90c80#code) |
+| Vote | `0x1f0ecd77002e134da59247944e5a2fdb24987e24` | [link](https://explorer-zk.tanenbaum.io/address/0x1f0ecd77002e134da59247944e5a2fdb24987e24#code) |
+| AnonymousVote | `0x1e9b1f239fdca5d90fe94a9049a06c88d1efdef4` | [link](https://explorer-zk.tanenbaum.io/address/0x1e9b1f239fdca5d90fe94a9049a06c88d1efdef4#code) |
+| CitizenRegistry | `0x4f50fcd78f5951c6a7c0b8e940ed8003130bca5a` | [link](https://explorer-zk.tanenbaum.io/address/0x4f50fcd78f5951c6a7c0b8e940ed8003130bca5a#code) |
 
-Deployment record: `blockchain/deployments/zkTanenbaum.json` (deployed 2026-06-05 UTC).
+Deployer: `0x55cfaf9ec4426C3079Eb1B6Fdb6a52e2b2060261`. Deployment record: `blockchain/deployments/zkTanenbaum.json` (redeployed 2026-06-06 UTC; all five contracts source-verified on Blockscout).
 
 ### B. Network
 
